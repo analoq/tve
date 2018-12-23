@@ -1,16 +1,13 @@
 """Domain module encompassess all domain logic"""
-from Persistence import Persistence
-from Service import Service
-from Acquisition import Acquisition
-
 
 class Domain(object):
     """Domain class for domain logic"""
-    def __init__(self):
+    def __init__(self, persistence, acquisition, service):
         """Initializes Domain object"""
-        self.persistence = Persistence('tve.db')
-        self.acquisition = Acquisition(self._callback)
-        self.service = Service(self.persistence)
+        self.persistence = persistence
+        self.acquisition = acquisition
+        self.service = service
+        self.acquisition.set_callback(self._callback)
 
     def _callback(self, item):
         self.persistence.store(item['dt'], item['value'])

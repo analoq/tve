@@ -5,4 +5,5 @@ cache: pip
 install:
   - pip install -r backend/requirements.txt
 script:
+  - pylint --errors-only backend/*.py
   - python -m unittest discover -s backend 

@@ -3,6 +3,9 @@ import logging
 
 import uwsgidecorators
 
+from Persistence import Persistence
+from Service import Service
+from Acquisition import Acquisition
 from Domain import Domain
 
 
@@ -10,7 +13,10 @@ from Domain import Domain
 def handler():
     """postfork hanlder, creates global domain object"""
     global domain
-    domain = Domain()
+    persistence = Persistence('tve.db')
+    acquisition = Acquisition()
+    service = Service(persistence)
+    domain = Domain(persistence, acquisition, service)
     logging.info('Domain object initialized')
 
 
