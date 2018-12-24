@@ -7,7 +7,7 @@ from datetime import datetime
 class Acquisition(object):
     """Data acquisition class"""
 
-    def __init__(self):
+    def __init__(self, path):
         """Launch the acquisition thread"""
         self.callback = None
         # launch data acquisition thread
