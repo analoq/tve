@@ -14,7 +14,7 @@ def handler():
     """postfork hanlder, creates global domain object"""
     global domain
     persistence = Persistence('tve.db')
-    acquisition = Acquisition()
+    acquisition = Acquisition('/dev/cu.usbmodem1411')
     service = Service(persistence)
     domain = Domain(persistence, acquisition, service)
     logging.info('Domain object initialized')

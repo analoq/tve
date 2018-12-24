@@ -34,7 +34,7 @@ class Service(object):
         self.queues.append(queue)
         self.queue_lock.release()
         logging.info("Starting request, queues: %d" % len(self.queues))
-        items = self.persistence.historical(delta=60)
+        items = self.persistence.historical(seconds=60)
 
         headers = [('Content-type', 'text/event-stream'),
                    ('Access-Control-Allow-Origin', '*')]
