@@ -23,9 +23,11 @@ class TestService(unittest.TestCase):
         service = Service(persistence)
         response = service.request(self.start_response)
         self.assertEqual(response.next(),
-                'data: [{"dt": "%s", "value": 100}]\n\n' % dt0.isoformat())
-        dt1 = now
-        service.enqueue({'dt': dt1, 'value': 200})
+                'data: {"dest": "archive", "items": [], "type": "preload"}\n\n')
         self.assertEqual(response.next(),
-                'data: [{"dt": "%s", "value": 200}]\n\n' % dt1.isoformat())
+                'data: {"dest": "recent", "items": [{"dt": "%s", "value": 100}], "type": "preload"}\n\n' % dt0.isoformat())
+        dt1 = now
+        service.enqueue('recent', 'realtime', {'dt': dt1, 'value': 200})
+        self.assertEqual(response.next(),
+                'data: {"dest": "recent", "items": [{"dt": "%s", "value": 200}], "type": "realtime"}\n\n' % dt1.isoformat())
 
