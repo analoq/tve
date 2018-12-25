@@ -39,10 +39,11 @@ class TestPersistence(unittest.TestCase):
         self.persistence.store(dt0, 100)
         self.persistence.store(dt1, 200)
         self.persistence.store(dt2, 300)
-        self.persistence.archive()
-        result = self.persistence.historical_archive(10)
         expected = [
             {'dt': dt0.replace(minute=0), 'value': 100},
             {'dt': dt1.replace(minute=45), 'value': 250},
         ]
+        result = self.persistence.archive()
+        self.assertEqual(result, expected)
+        result = self.persistence.historical_archive(2)
         self.assertEqual(result, expected)

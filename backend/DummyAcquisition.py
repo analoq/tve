@@ -27,4 +27,4 @@ class Acquisition(object):
             }
             if self.callback:
                 self.callback(item)
-            time.sleep(2)
+            time.sleep(1)

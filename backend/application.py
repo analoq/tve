@@ -17,7 +17,8 @@ def handler():
     acquisition = Acquisition('/dev/cu.usbmodem1411')
     service = Service(persistence)
     domain = Domain(persistence, acquisition, service)
-    logging.getLogger().setLevel(logging.INFO)
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(levelname)s %(message)s')
     logging.info('Domain object initialized')
 
 

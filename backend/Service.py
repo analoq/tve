@@ -13,40 +13,56 @@ class Service(object):
         self.persistence = persistence
 
     @staticmethod
-    def _format(items):
-        payload = []
+    def _format(sample_dest, sample_type, items):
+        payload = {
+            'dest': sample_dest,
+            'type': sample_type,
+            'items': []
+        }
         for item in items:
-            payload.append({
+            payload['items'].append({
                 'dt': item['dt'].isoformat(),
                 'value': item['value'],
             })
         return "data: %s\n\n" % json.dumps(payload)
 
-    def enqueue(self, item):
+    def enqueue(self, sample_dest, sample_type, item):
         """Enqueue a sample for all active clients"""
         for queue in self.queues:
-            queue.put(item)
+            queue.put((sample_dest, sample_type, item))
 
     def request(self, start_response):
         """Handle a web client"""
+        # initialize queue
         queue = Queue()
         self.queue_lock.acquire()
         self.queues.append(queue)
         self.queue_lock.release()
         logging.info("Starting request, queues: %d" % len(self.queues))
-        items = self.persistence.historical(seconds=60)
 
+        # start response
         headers = [('Content-type', 'text/event-stream'),
                    ('Access-Control-Allow-Origin', '*')]
         start_response('200 OK', headers)
-        payload = self._format(items)
-        logging.info("Sending %s" % payload)
+
+        # send archived samples
+        items = self.persistence.historical_archive(hours=24)
+        payload = self._format('archive', 'preload', items)
+        logging.info("Archived payload: %s" % payload.strip())
         yield payload
+
+        # send recent samples
+        items = self.persistence.historical(seconds=60)
+        payload = self._format('recent', 'preload', items)
+        logging.info("Recent payload: %s" % payload.strip())
+        yield payload
+
+        # send samples as they arrive
         try:
             while True:
-                item = queue.get(timeout=60)
-                payload = self._format([item])
-                logging.info("Sending %s" % payload)
+                sample_dest, sample_type, item = queue.get(timeout=60)
+                payload = self._format(sample_dest, sample_type, [item])
+                logging.info("Sample payload: %s" % payload.strip())
                 yield payload
         except (IOError, Empty) as exc:
             self.queue_lock.acquire()

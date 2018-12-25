@@ -63,16 +63,20 @@ class Persistence(object):
         """Aggregate older data to archive table"""
         con = sqlite3.connect(self.db_name)
         cur = con.cursor()
-        cur.execute("""INSERT INTO moisture_archive(dt, value)
-                       SELECT datetime(strftime('%Y-%m-%d %H:00:00', dt), '+'||(strftime('%M', dt)/15*15)||' minutes'),
+        cur.execute("""SELECT datetime(strftime('%Y-%m-%d %H:00:00', dt), '+'||(strftime('%M', dt)/15*15)||' minutes'),
                               ROUND(AVG(value))
                        FROM moisture
                        WHERE dt < strftime('%Y-%m-%d %H:00:00', 'now')
                        GROUP BY strftime('%Y-%m-%d %H', dt), strftime('%M', dt)/15""")
+        result = self._format(cur)
+        for row in result:
+            cur.execute("""INSERT INTO moisture_archive(dt, value)
+                           VALUES(?, ?)""", (row['dt'], row['value']))
         cur.execute("""DELETE FROM moisture
                        WHERE dt < strftime('%Y-%m-%d %H:00:00', 'now')""")
         con.commit()
         con.close()
+        return result
 
     def historical_archive(self, hours):
         """Return archived historical data for provided delta, in hours"""

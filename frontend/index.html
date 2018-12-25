@@ -8,7 +8,7 @@
 <script>
 var eventSource = new EventSource("http://localhost:8000/");
 
-var config = {
+var recentConfig = {
   type: 'line',
   data: {
     datasets: [{
@@ -23,7 +23,28 @@ var config = {
         type: 'realtime',
 	realtime: {
 	  delay: 2000,
-	  duration: 60000,
+	  duration: 60 * 1000,
+        }
+      }]
+    }
+  }
+};
+
+var archiveConfig = {
+  type: 'line',
+  data: {
+    datasets: [{
+	label: 'moisture',
+      	cubicInterpolationMode: 'monotone',
+	data: []
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        type: 'realtime',
+	realtime: {
+	  duration: 24*60*60*1000,
         }
       }]
     }
@@ -32,18 +53,31 @@ var config = {
 
 eventSource.onmessage = function(e)
 {
-    var targetContainer = document.getElementById("content");
     var obj = JSON.parse(e.data);
 
-    for(i = 0; i < obj.length; i ++)
+    if ( obj.dest == 'archive' )
+    {
+	var config = archiveConfig;
+	var chart = window.archiveChart;
+    }
+    else
+    {
+	var config = recentConfig;
+	var chart = window.recentChart;
+    }
+
+    if ( obj.type == 'preload' )
+	config.data.datasets[0].data = [];
+
+    for(i = 0; i < obj.items.length; i ++)
     {
     	config.data.datasets[0].data.push({
-		x: new Date(obj[i].dt),
-		y: obj[i].value
+		x: new Date(obj.items[i].dt),
+		y: obj.items[i].value
 	    });
     }
 
-    window.myChart.update({
+    chart.update({
 	   preservation: true
     });
 };
@@ -52,11 +86,16 @@ eventSource.onmessage = function(e)
 <body>
   <h1>Terrestrial Vegetation Evaluator</h1>
 
-  <canvas id="myChart" width="400" height="150"></canvas>
+  Last 60 seconds:
+  <canvas id="recentChart" width="400" height="100"></canvas>
+  Last 24 hours:
+  <canvas id="archiveChart" width="400" height="100"></canvas>
 
   <script>
-  var ctx = document.getElementById("myChart").getContext("2d");
-  var myChart = new Chart(ctx, config);
+  var recentContext = document.getElementById("recentChart").getContext("2d");
+  var recentChart = new Chart(recentContext, recentConfig);
+  var archiveContext = document.getElementById("archiveChart").getContext("2d");
+  var archiveChart = new Chart(archiveContext, archiveConfig);
   </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 """Domain module encompassess all domain logic"""
 import threading
 import time
+from datetime import datetime, timedelta
 import logging
 
 class Domain(object):
@@ -16,10 +17,15 @@ class Domain(object):
 
     def _callback(self, item):
         self.persistence.store(item['dt'], item['value'])
-        self.service.enqueue(item)
+        self.service.enqueue('recent', 'realtime', item)
 
     def _thread(self):
         while True:
-            time.sleep(15*60)
+            now = datetime.utcnow()
+            now_floor = now.replace(second=0,microsecond=0)
+            next_time = now_floor + timedelta(minutes=15)
+            time.sleep((next_time - now).total_seconds())
             logging.info("Archiving")
-            self.persistence.archive()
+            items = self.persistence.archive()
+            if items:
+                self.service.enqueue('archive', 'realtime', items)
