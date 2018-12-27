@@ -27,7 +27,7 @@ class TestService(unittest.TestCase):
         self.assertEqual(response.next(),
                 'data: {"dest": "recent", "items": [{"dt": "%sZ", "humidity": 100.0, "temperature": 100.0, "moisture": 100.0, "luminence": 100.0}], "type": "preload"}\n\n' % dt0.isoformat())
         dt1 = now
-        service.enqueue('recent', 'realtime', {'dt': dt1, 'moisture': 200.0, 'luminence': 200.0, 'temperature': 200.0, 'humidity': 200.0})
+        service.enqueue('recent', 'realtime', [{'dt': dt1, 'moisture': 200.0, 'luminence': 200.0, 'temperature': 200.0, 'humidity': 200.0}])
         self.assertEqual(response.next(),
                 'data: {"dest": "recent", "items": [{"dt": "%sZ", "humidity": 200.0, "temperature": 200.0, "moisture": 200.0, "luminence": 200.0}], "type": "realtime"}\n\n' % dt1.isoformat())
 

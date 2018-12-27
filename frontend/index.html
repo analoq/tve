@@ -108,6 +108,14 @@ eventSource.onmessage = function(e)
 		y: obj.items[i].humidity
 	    });
     }
+
+    if ( obj.dest == 'archive' )
+    {
+      moistureArchiveChart.update();
+      luminenceArchiveChart.update();
+      temperatureArchiveChart.update();
+      humidityArchiveChart.update();
+    }
 };
 </script>
 </head>
@@ -166,10 +174,10 @@ eventSource.onmessage = function(e)
   // luminence
   var luminenceRecentContext = document.getElementById("luminenceRecentChart").getContext("2d");
   var luminenceRecentChart = new Chart(luminenceRecentContext, Charts.luminence.recent);
-  Charts.luminence.recent.data.datasets[0].label = 'Luminence';
+  Charts.luminence.recent.data.datasets[0].label = 'Luminance';
   var luminenceArchiveContext = document.getElementById("luminenceArchiveChart").getContext("2d");
   var luminenceArchiveChart = new Chart(luminenceArchiveContext, Charts.luminence.archive);
-  Charts.luminence.archive.data.datasets[0].label = 'Luminence';
+  Charts.luminence.archive.data.datasets[0].label = 'Luminance';
 
   // temperature
   var temperatureRecentContext = document.getElementById("temperatureRecentChart").getContext("2d");

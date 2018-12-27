@@ -29,10 +29,10 @@ class Service(object):
             })
         return "data: %s\n\n" % json.dumps(payload)
 
-    def enqueue(self, sample_dest, sample_type, item):
+    def enqueue(self, sample_dest, sample_type, items):
         """Enqueue a sample for all active clients"""
         for queue in self.queues:
-            queue.put((sample_dest, sample_type, item))
+            queue.put((sample_dest, sample_type, items))
 
     def request(self, start_response):
         """Handle a web client"""
@@ -63,8 +63,8 @@ class Service(object):
         # send samples as they arrive
         try:
             while True:
-                sample_dest, sample_type, item = queue.get(timeout=60)
-                payload = self._format(sample_dest, sample_type, [item])
+                sample_dest, sample_type, items = queue.get(timeout=60)
+                payload = self._format(sample_dest, sample_type, items)
                 logging.info("Sample payload: %s" % payload.strip())
                 yield payload
         except (IOError, Empty) as exc:

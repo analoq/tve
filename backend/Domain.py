@@ -22,7 +22,7 @@ class Domain(object):
                 item['temperature'],
                 item['humidity']
             )
-        self.service.enqueue('recent', 'realtime', item)
+        self.service.enqueue('recent', 'realtime', [item])
 
     def _thread(self):
         while True:
