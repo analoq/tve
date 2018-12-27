@@ -30,12 +30,13 @@ class Acquisition(object):
                 if not line:
                     logging.warn('Serial port read timeout')
                     continue
-                if not line.strip().isdigit():
-                    logging.warn('Serial port read non-integer')
-                    continue
+                split = line.strip().split('\t')
                 item = {
                     'dt': datetime.utcnow(),
-                    'value': int(line),
+                    'moisture': float(split[0]),
+                    'luminence': float(split[1]),
+                    'temperature': float(split[2]),
+                    'humidity': float(split[3]),
                 }
                 if self.callback:
                     self.callback(item)

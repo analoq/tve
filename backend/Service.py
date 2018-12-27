@@ -21,8 +21,11 @@ class Service(object):
         }
         for item in items:
             payload['items'].append({
-                'dt': item['dt'].isoformat(),
-                'value': item['value'],
+                'dt': item['dt'].strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'moisture': item['moisture'],
+                'luminence': item['luminence'],
+                'temperature': item['temperature'],
+                'humidity': item['humidity'],
             })
         return "data: %s\n\n" % json.dumps(payload)
 

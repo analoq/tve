@@ -21,29 +21,28 @@ class TestPersistence(unittest.TestCase):
         dt0 = now - timedelta(seconds=120)
         dt1 = now - timedelta(seconds=30)
         dt2 = now - timedelta(seconds=15)
-        self.persistence.store(dt0, 100)
-        self.persistence.store(dt1, 200)
-        self.persistence.store(dt2, 300)
+        self.persistence.store(dt0, 0.1, 0.1, 0.1, 0.1)
+        self.persistence.store(dt1, 0.2, 0.2, 0.2, 0.2)
+        self.persistence.store(dt2, 0.3, 0.3, 0.3, 0.3)
         result = self.persistence.historical(60)
         expected = [
-            {'dt': dt1, 'value': 200},
-            {'dt': dt2, 'value': 300}
+            {'dt': dt1, 'moisture': 0.2, 'luminence': 0.2, 'temperature': 0.2, 'humidity': 0.2},
+            {'dt': dt2, 'moisture': 0.3, 'luminence': 0.3, 'temperature': 0.3, 'humidity': 0.3}
         ]
         self.assertEqual(result, expected)
 
     def test_historical_archive(self):
         now = datetime.utcnow().replace(minute=0,second=0,microsecond=0)
-        dt0 = now - timedelta(minutes=50)
-        dt1 = now - timedelta(minutes=10)
-        dt2 = now - timedelta(minutes=5)
-        self.persistence.store(dt0, 100)
-        self.persistence.store(dt1, 200)
-        self.persistence.store(dt2, 300)
+        dt0 = now - timedelta(minutes=80)
+        dt1 = now - timedelta(minutes=70)
+        dt2 = now - timedelta(minutes=30)
+        self.persistence.store(dt0, 0.0, 0.0, 0.0, 0.0)
+        self.persistence.store(dt1, 0.2, 0.2, 0.2, 0.2)
+        self.persistence.store(dt2, 0.3, 0.3, 0.3, 0.3)
         expected = [
-            {'dt': dt0.replace(minute=0), 'value': 100},
-            {'dt': dt1.replace(minute=45), 'value': 250},
+            {'dt': dt1.replace(minute=0), 'moisture': 0.1, 'luminence': 0.1, 'temperature': 0.1, 'humidity': 0.1},
+            {'dt': dt2.replace(minute=0), 'moisture': 0.3, 'luminence': 0.3, 'temperature': 0.3, 'humidity': 0.3},
         ]
-        result = self.persistence.archive()
-        self.assertEqual(result, expected)
-        result = self.persistence.historical_archive(2)
+        self.persistence.archive()
+        result = self.persistence.historical_archive(3)
         self.assertEqual(result, expected)

@@ -23,7 +23,10 @@ class Acquisition(object):
         while True:
             item = {
                 'dt': datetime.utcnow(),
-                'value': random.randint(0, 1023),
+                'moisture': random.random(),
+                'luminence': random.random(),
+                'temperature': random.random(),
+                'humidity': random.random(),
             }
             if self.callback:
                 self.callback(item)
