@@ -108,51 +108,49 @@ eventSource.onmessage = function(e)
 		y: obj.items[i].humidity
 	    });
     }
-
-    chart.update();
 };
 </script>
 </head>
 <body>
   <h1>Terrestrial Vegetation Evaluator</h1>
 
-  <!-- moisture -->
+  <!-- realtime -->
   <p>
+      Realtime:
       <div style="display: inline-block; width: 49%; height: 200px;">
-          <canvas id="moistureArchiveChart" width="200" height="100"></canvas>
-      </div>
+          <canvas id="luminenceRecentChart" width="200" height="100"></canvas>
+      </div> 
       <div style="display: inline-block; width: 49%; height: 200px;">
           <canvas id="moistureRecentChart" width="200" height="100"></canvas>
       </div>
   </p>
 
-  <!-- luminence -->
   <p style="margin-top: 100px;">
+      <div style="display: inline-block; width: 49%; height: 200px;">
+          <canvas id="temperatureRecentChart" width="200" height="100"></canvas>
+      </div>
+      <div style="display: inline-block; width: 49%; height: 200px;">
+          <canvas id="humidityRecentChart" width="200" height="100"></canvas>
+      </div>
+  </p>
+
+  <!-- historical -->
+  <p style="margin-top: 100px;">
+      Historical:
       <div style="display: inline-block; width: 49%; height: 200px;">
           <canvas id="luminenceArchiveChart" width="200" height="100"></canvas>
       </div>
       <div style="display: inline-block; width: 49%; height: 200px;">
-          <canvas id="luminenceRecentChart" width="200" height="100"></canvas>
+          <canvas id="moistureArchiveChart" width="200" height="100"></canvas>
       </div>
   </p>
 
-  <!-- temperature -->
   <p style="margin-top: 100px;">
       <div style="display: inline-block; width: 49%; height: 200px;">
           <canvas id="temperatureArchiveChart" width="200" height="100"></canvas>
       </div>
       <div style="display: inline-block; width: 49%; height: 200px;">
-          <canvas id="temperatureRecentChart" width="200" height="100"></canvas>
-      </div>
-  </p>
-
-  <!-- humidity -->
-  <p style="margin-top: 100px;">
-      <div style="display: inline-block; width: 49%; height: 200px;">
           <canvas id="humidityArchiveChart" width="200" height="100"></canvas>
-      </div>
-      <div style="display: inline-block; width: 49%; height: 200px;">
-          <canvas id="humidityRecentChart" width="200" height="100"></canvas>
       </div>
   </p>
 
@@ -160,26 +158,34 @@ eventSource.onmessage = function(e)
   // moisture
   var moistureRecentContext = document.getElementById("moistureRecentChart").getContext("2d");
   var moistureRecentChart = new Chart(moistureRecentContext, Charts.moisture.recent);
+  Charts.moisture.recent.data.datasets[0].label = 'Moisture';
   var moistureArchiveContext = document.getElementById("moistureArchiveChart").getContext("2d");
   var moistureArchiveChart = new Chart(moistureArchiveContext, Charts.moisture.archive);
+  Charts.moisture.archive.data.datasets[0].label = 'Moisture';
 
   // luminence
   var luminenceRecentContext = document.getElementById("luminenceRecentChart").getContext("2d");
   var luminenceRecentChart = new Chart(luminenceRecentContext, Charts.luminence.recent);
+  Charts.luminence.recent.data.datasets[0].label = 'Luminence';
   var luminenceArchiveContext = document.getElementById("luminenceArchiveChart").getContext("2d");
   var luminenceArchiveChart = new Chart(luminenceArchiveContext, Charts.luminence.archive);
+  Charts.luminence.archive.data.datasets[0].label = 'Luminence';
 
   // temperature
   var temperatureRecentContext = document.getElementById("temperatureRecentChart").getContext("2d");
   var temperatureRecentChart = new Chart(temperatureRecentContext, Charts.temperature.recent);
+  Charts.temperature.recent.data.datasets[0].label = 'Temperature';
   var temperatureArchiveContext = document.getElementById("temperatureArchiveChart").getContext("2d");
   var temperatureArchiveChart = new Chart(temperatureArchiveContext, Charts.temperature.archive);
+  Charts.temperature.archive.data.datasets[0].label = 'Temperature';
 
   // humidity
   var humidityRecentContext = document.getElementById("humidityRecentChart").getContext("2d");
   var humidityRecentChart = new Chart(humidityRecentContext, Charts.humidity.recent);
+  Charts.humidity.recent.data.datasets[0].label = 'Humidity';
   var humidityArchiveContext = document.getElementById("humidityArchiveChart").getContext("2d");
   var humidityArchiveChart = new Chart(humidityArchiveContext, Charts.humidity.archive);
+  Charts.humidity.archive.data.datasets[0].label = 'Humidity';
 
   </script>
 </body>
