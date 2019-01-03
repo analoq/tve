@@ -49,7 +49,7 @@ class Service(object):
         start_response('200 OK', headers)
 
         # send archived samples
-        items = self.persistence.historical_archive(hours=24)
+        items = self.persistence.historical_archive(hours=24*7)
         payload = self._format('archive', 'preload', items)
         logging.info("Archived payload: %s" % payload.strip())
         yield payload

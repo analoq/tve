@@ -34,7 +34,7 @@ class Domain(object):
             time.sleep(delta)
             logging.info("Archiving")
             self.persistence.archive()
-            items = self.persistence.historical_archive(hours=24)
+            items = self.persistence.historical_archive(hours=24*7)
             if items:
                 self.service.enqueue('archive', 'preload', items)
 
